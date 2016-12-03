@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Crystal Collector!</title>
+  <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+</head>
+<body>
+  <h1>Crystals Collector!</h1>
+  <div class="instructions">
+    <p id="instructionTxt">
+      You will be given a random number at the start of this game.
+      <br><br>
+      There are four crystals below. By clicking on a crystal you will add a specific amount of points to your total score.
+      <br><br>
+      You win the game by matching your total score to random number, you lose the game if your total score goes above the random number.
+      <br><br>
+      The value of each crystal is hidden from you until you click on it.
+      <br><br>
+      Each time when the game starts, the game will change the values of each crystal.
+    </p>  
+  </div>
+  
+  <div>
+    <div id="guessFrame">
+      <h2>Number to Guess: <span id="numberToGuess"></span></h2>
+    </div>
+     
+    <div id="trackFrame">
+         <p id="textStatus"> </p>
+         <br>
+         <p id="win">Wins: 0 </p>
+         <br>
+         <p id="loss">Losses: 0 </p>
+    </div>
+  </div>
+  
+  <br>
+  
+  <div id="crystals">
+  </div>
+    
+  <div id="totalFrame">
+    <p id="totalHeader">Your total score is:</p>
+  </div>
+
+  <div id="total">
+    0
+  </div>
+
+  <!-- JAVASCRIPT  -->
+  <!-- ========================================= -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+
+  <script type="text/javascript">
+  // Variables
+  var resetGame = true;
+  var targetNumber = 0;
+  var counter = 0;
+  var wins = 0;
+  var losses = 0;
+  var numberOptions = [];
+  var srcCrystal =["ruby","blue","yellow","green"];
+
+  //Functions
+  function generateNumbers(){
+    //Generate and utput Number to Guess
+    targetNumber = Math.floor(Math.random() * 102) + 19;
+    $("#numberToGuess").text(targetNumber);
+    
+    //Reset and Output counter
+    counter = 0;
+    $("#total").html(counter);
+
+    // For loop to create crystals for every numberOption.
+    for (var i = 0; i < 4; i++) {
+      //Create an imageCrystal with random number
+      var txtImage = "assets/images/" + srcCrystal[i] + ".jpg";
+      // Create Random Number between 1 and 12
+      numberOptions[i] = Math.floor(Math.random() * 12) + 1;
+      var imageCrystal = $("<img>").addClass("crystalImage").attr("src", txtImage ).attr("data-crystalvalue", numberOptions[i]);
+
+      //Output Crystal
+      if (i == 0) {
+        $("#crystals").html(imageCrystal);
+      } else {
+        $("#crystals").append(imageCrystal);
+      }
+    }
+  }
+
+  //Start
+  generateNumbers();
+
+  // Click event applies to every single crystal
+  $(document).on("click",".crystalImage", function() {
+    // Get Crystal values
+    var crystalValue = ($(this).data("crystalvalue"));
+
+    // Track and output counter, wins and losses
+    counter = counter + crystalValue;
+    $("#total").html(counter)
+    console.log("New score: " + counter);
+
+    if (counter === targetNumber) {
+      wins++;    
+      $("#textStatus").html("You won!");
+      $("#win").html("Wins: " + wins);
+      console.log("You win!");
+      generateNumbers();  
+    }
+    else if (counter > targetNumber) {
+      losses++;
+      $("#textStatus").html("You lost!");
+      $("#loss").html("Losses: " + losses);
+      targetNumber = Math.floor(Math.random() * 102) + 19;
+      $("#numberToGuess").text(targetNumber);
+      // counter = 0;
+      $("#total").html(counter);
+      console.log("You lose!!");
+      generateNumbers();  
+    }
+  });
+
+  </script>
+</body>
+</html>
